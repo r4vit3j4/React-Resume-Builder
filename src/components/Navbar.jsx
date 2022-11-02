@@ -20,8 +20,11 @@ import {
 } from "@chakra-ui/react";
 import {
   IconArrowRight,
+  IconHandStop,
+  IconLayoutDashboard,
   IconLogout,
   IconMenu2,
+  IconMoodSmileBeam,
   IconSettings,
   IconSun,
 } from "@tabler/icons";
@@ -49,7 +52,7 @@ const Navbar = ({ userDetails }) => {
       top="0"
       left="0"
       bg="white"
-      borderBottom="1px solid #e6e6e6"
+      borderBottom="1px solid #e2e8f0"
       boxShadow="0 1px 2px 0 rgba(0, 0, 0, 0.05)"
       zIndex="10"
     >
@@ -159,19 +162,44 @@ const Navbar = ({ userDetails }) => {
                   >
                     <Image
                       src={
-                        userDetails?.picture === ""
-                          ? "/assets/avatar/avatar.png"
-                          : userDetails?.picture
+                        // userDetails?.picture === "" ?
+                        "/assets/avatar/avatar.png"
+                        // : userDetails?.picture
                       }
                       alt="avatar"
                       borderRadius="full"
                     />
                   </MenuButton>
                   <MenuList>
+                    <MenuItem>
+                      <Text display="flex" alignItems="center" gap="2">
+                        <Icon
+                          as={IconMoodSmileBeam}
+                          h="5"
+                          w="5"
+                          rotate="45deg"
+                          color="blue.500"
+                        />
+                        Hi
+                        <Text as="span" fontWeight="bold">
+                          {userDetails.name}!
+                        </Text>
+                      </Text>
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => navigate("/app")}
+                      display="flex"
+                      alignItems="center"
+                      gap="2"
+                    >
+                      <Icon as={IconLayoutDashboard} h="5" w="5" />
+                      App
+                    </MenuItem>
                     <MenuItem
                       display="flex"
                       gap="2"
                       onClick={() => navigate("/settings")}
+                      alignItems="center"
                     >
                       <Icon as={IconSettings} h="5" w="5" />
                       Settings
@@ -181,6 +209,7 @@ const Navbar = ({ userDetails }) => {
                       gap="2"
                       color="red.400"
                       onClick={logOut}
+                      alignItems="center"
                     >
                       <Icon as={IconLogout} h="5" w="5" />
                       Log out

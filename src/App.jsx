@@ -8,30 +8,26 @@ import AppPage from "./pages/AppPage";
 import ErrorPage from "./pages/ErrorPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
+import SettingsPage from "./pages/SettingsPage";
 import SignupPage from "./pages/SignupPage";
 
 const App = () => {
   const [userDetails, setUserDetails] = useState(null);
 
   const getUser = async () => {
-    try {
-      const url = `http://localhost:5000/auth/login/success`;
-      const { data } = await axios.get(url, { withCredentials: true });
-      setUserDetails(data.user._json);
-    } catch (err) {
-      console.log(err);
-    }
-
     const token = localStorage.getItem("token");
-    if (token) {
-      try {
+    try {
+      if (token) {
         const url = `http://localhost:5000/auth/verify`;
         const { data: res } = await axios.post(url, { token: token });
-        // console.log(res);
         setUserDetails(res._json);
-      } catch (err) {
-        console.log(err);
+      } else {
+        const url = `http://localhost:5000/auth/login/success`;
+        const { data } = await axios.get(url, { withCredentials: true });
+        setUserDetails(data.user._json);
       }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -43,6 +39,19 @@ const App = () => {
     console.log(userDetails);
   }, [userDetails]);
 
+  const [resumeDetails, setResumeDetails] = useState({
+    basic: {
+      name: "",
+      email: "",
+    },
+    profiles: [],
+    education: [],
+    projects: [],
+    work: [],
+    certifications: [],
+    skills: [],
+  });
+
   return (
     <Box>
       <Navbar userDetails={userDetails} />
@@ -52,7 +61,10 @@ const App = () => {
           path="/app"
           element={
             userDetails ? (
-              <AppPage userDetails={userDetails} />
+              <AppPage
+                resumeDetails={resumeDetails}
+                setResumeDetails={setResumeDetails}
+              />
             ) : (
               <Navigate to="/login" />
             )
@@ -72,9 +84,14 @@ const App = () => {
           path="/signup"
           element={userDetails ? <Navigate to="/app" /> : <SignupPage />}
         />
+        <Route
+          path="/settings"
+          element={userDetails ? <SettingsPage /> : <Navigate to="/login" />}
+        />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
-      <Footer />
+      {/* <Footer />
+       */}
     </Box>
   );
 };
